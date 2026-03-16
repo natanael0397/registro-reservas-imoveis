@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReservaHub - Residencial & Corporativo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <h2>ReservaHub</h2>
+    </div>
+    <nav>
+        <a href="#">Imóveis</a>
+        <a href="#">Anunciar</a>
+        <a href="#">Minhas Reservas</a>
+        <a href="#" class="btn-login">Entrar</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="search-container">
+        <div class="search-group">
+            <label>LOCALIZAÇÃO</label>
+            <input type="text" placeholder="Para onde você vai?">
+        </div>
+        <div class="search-group">
+            <label>CHECK-IN / OUT</label>
+            <input type="date">
+        </div>
+        <div class="search-group">
+            <label>TIPO DE USO</label>
+            <select>
+                <option value="res">Residencial</option>
+                <option value="corp">Corporativo (Home Office)</option>
+            </select>
+        </div>
+        <button class="btn-search">Buscar agora</button>
+    </div>
+</section>
+
+<main class="container">
+    <h3 class="section-title">Imóveis Disponíveis</h3>
+    
+    <div class="grid">
+        <article class="card">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500&q=60" alt="Casa" class="card-img">
+            <div class="card-content">
+                <span class="tag tag-res">RESIDENCIAL</span>
+                <h4>Casa Familiar com Piscina</h4>
+                <p class="location">Fortaleza, Ceará</p>
+                <p class="card-price">R$ 350 <small>/ noite</small></p>
+            </div>
+        </article>
+
+        <article class="card">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=60" alt="Apartamento" class="card-img">
+            <div class="card-content">
+                <span class="tag tag-corp">CORPORATIVO</span>
+                <h4>Studio Executivo </h4>
+                <p class="location">Fortaleza, Ceará</p>
+                <p class="card-price">R$ 220 <small>/ noite</small></p>
+            </div>
+        </article>
+    </div>
+</main>
+
+</body>
+</html>
