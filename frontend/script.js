@@ -22,29 +22,29 @@ if (cadastroForm) {
  alert(data.mensagem || data.erro);
  });
 }
-
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
- loginForm.addEventListener("submit", async (e) => {
- e.preventDefault();
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
- const dados = {
- email: document.getElementById("loginEmail").value,
- senha: document.getElementById("loginPassword").value
- };
+    const dados = {
+      email: document.getElementById("loginEmail").value,
+      senha: document.getElementById("loginPassword").value
+    };
 
- const res = await fetch(API + "/login", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify(dados)
- });
+    const res = await fetch(API + "/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados)
+    });
 
- if (res.status === 401) {
- alert("Login inválido");
- return;
- }
+    if (res.status === 401) {
+      alert("Login inválido");
+      return;
+    }
 
- const data = await res.json();
- alert("Login realizado!");
- });
+    const data = await res.json();
+    alert("Login realizado!");
+    window.location.href = "index.html";
+  });
 }
