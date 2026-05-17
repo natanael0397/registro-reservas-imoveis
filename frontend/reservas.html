@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Minhas Reservas - ReservaHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo"><h2>ReservaHub</h2></div>
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="usuarios.html">Usuários</a>
+        <a id="navAnunciar" href="anunciar.html" style="display:none">Anunciar</a>
+        <a href="reservas.html">Minhas Reservas</a>
+        <a id="navLogin" href="login.html" class="btn-login">Entrar</a>
+        <span id="navUsuario" style="display:none; align-items:center; gap:10px;">
+            <span style="color:#cbd5e1">Olá, <strong id="navNome"></strong></span>
+            <a href="#" class="btn-login" onclick="logout()">Sair</a>
+        </span>
+    </nav>
+</header>
+
+<main class="container">
+    <h3 class="section-title">Minhas Reservas</h3>
+    <table class="tabela">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Imóvel</th>
+                <th>Localização</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Total</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="reservas-tbody">
+            <tr><td colspan="7">Carregando...</td></tr>
+        </tbody>
+    </table>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

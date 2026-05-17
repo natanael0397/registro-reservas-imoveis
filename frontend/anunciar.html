@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Anunciar Imóvel - ReservaHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+
+<div class="auth-container" style="width:450px">
+    <h2>Anunciar Imóvel</h2>
+    <form id="anunciarForm">
+        <div class="search-group">
+            <label>Título</label>
+            <input type="text" id="titulo" required>
+        </div>
+        <div class="search-group">
+            <label>Localização</label>
+            <input type="text" id="localizacao" required>
+        </div>
+        <div class="search-group">
+            <label>Preço por noite (R$)</label>
+            <input type="number" id="preco" step="0.01" required>
+        </div>
+        <div class="search-group">
+            <label>Tipo</label>
+            <select id="tipo">
+                <option value="res">Residencial</option>
+                <option value="corp">Corporativo</option>
+            </select>
+        </div>
+        <div class="search-group">
+            <label>URL da Foto</label>
+            <input type="text" id="foto_url" placeholder="https://...">
+        </div>
+        <button type="submit" class="btn-search" style="width:100%; margin-top:20px;">CADASTRAR IMÓVEL</button>
+    </form>
+    <a href="index.html" style="display:block; margin-top:15px; text-align:center; color:#64748b; font-size:0.9rem;">Voltar ao início</a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
