@@ -4,7 +4,9 @@ const cors = require("cors");
 const mysql = require("mysql2/promise");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://spontaneous-cactus-973254.netlify.app"
+}));
 app.use(express.json());
 
 const pool = mysql.createPool({
