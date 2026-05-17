@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuários - ReservaHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo"><h2>ReservaHub</h2></div>
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="usuarios.html">Usuários</a>
+        <a id="navAnunciar" href="anunciar.html" style="display:none">Anunciar</a>
+        <a href="reservas.html">Minhas Reservas</a>
+        <a id="navLogin" href="login.html" class="btn-login">Entrar</a>
+        <span id="navUsuario" style="display:none; align-items:center; gap:10px;">
+            <span style="color:#cbd5e1">Olá, <strong id="navNome"></strong></span>
+            <a href="#" class="btn-login" onclick="logout()">Sair</a>
+        </span>
+    </nav>
+</header>
+
+<main class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 class="section-title" style="margin:0">Usuários - Listar</h3>
+        <div style="display:flex; gap:10px;">
+            <a href="cadastro.html" class="btn-search">Incluir</a>
+            <button class="btn-search" onclick="imprimirTabela()">Imprimir</button>
+        </div>
+    </div>
+
+    <table class="tabela">
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="usuarios-tbody">
+            <tr><td colspan="6">Carregando...</td></tr>
+        </tbody>
+    </table>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
