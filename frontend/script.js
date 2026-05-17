@@ -1,6 +1,5 @@
-const API = "https://SEU-BACKEND.railway.app";
+const API = "https://optimistic-friendship-production-2743.up.railway.app";
 
-// CADASTRO
 const cadastroForm = document.getElementById("cadastroForm");
 if (cadastroForm) {
  cadastroForm.addEventListener("submit", async (e) => {
@@ -24,7 +23,6 @@ if (cadastroForm) {
  });
 }
 
-// LOGIN
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
  loginForm.addEventListener("submit", async (e) => {
