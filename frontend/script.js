@@ -42,22 +42,36 @@ const cadastroForm = document.getElementById("cadastroForm");
 if (cadastroForm) {
   cadastroForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const dados = {
-      nome: document.getElementById("nome").value,
-      email: document.getElementById("email").value,
-      senha: document.getElementById("senha").value,
-      tipo_usuario: document.getElementById("tipo_usuario").value
-    };
+
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value.trim();
+    const tipo_usuario = document.getElementById("tipo_usuario").value;
+
+    if (nome.length < 3) {
+      alert("Nome deve ter pelo menos 3 caracteres!");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("E-mail inválido!");
+      return;
+    }
+    if (senha.length < 6) {
+      alert("Senha deve ter pelo menos 6 caracteres!");
+      return;
+    }
+
     const res = await fetch(API + "/cadastro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados)
+      body: JSON.stringify({ nome, email, senha, tipo_usuario })
     });
     const data = await res.json();
     alert(data.mensagem || data.erro);
     if (data.mensagem) window.location.href = "login.html";
   });
 }
+
 
 
 const loginForm = document.getElementById("loginForm");
@@ -187,18 +201,42 @@ if (anunciarForm) {
   anunciarForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const usuario = getUsuario();
-    const dados = {
-      titulo: document.getElementById("titulo").value,
-      localizacao: document.getElementById("localizacao").value,
-      preco: document.getElementById("preco").value,
-      tipo: document.getElementById("tipo").value,
-      foto_url: document.getElementById("foto_url").value,
-      proprietario_id: usuario.id
-    };
+
+    const titulo = document.getElementById("titulo").value.trim();
+    const localizacao = document.getElementById("localizacao").value.trim();
+    const preco = document.getElementById("preco").value;
+    const tipo = document.getElementById("tipo").value;
+    const foto_url = document.getElementById("foto_url").value.trim();
+
+    if (titulo.length < 5) {
+      alert("Título deve ter pelo menos 5 caracteres!");
+      return;
+    }
+    if (/^\d+$/.test(titulo)) {
+      alert("Título não pode ser apenas números!");
+      return;
+    }
+    if (localizacao.length < 5) {
+      alert("Localização deve ter pelo menos 5 caracteres!");
+      return;
+    }
+    if (/^\d+$/.test(localizacao)) {
+      alert("Localização não pode ser apenas números!");
+      return;
+    }
+    if (!foto_url) {
+      alert("A foto é obrigatória!");
+      return;
+    }
+    if (!foto_url.startsWith("http")) {
+      alert("URL da foto inválida!");
+      return;
+    }
+
     const res = await fetch(API + "/imoveis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados)
+      body: JSON.stringify({ titulo, localizacao, preco, tipo, foto_url, proprietario_id: usuario.id })
     });
     const data = await res.json();
     alert(data.mensagem || data.erro);
