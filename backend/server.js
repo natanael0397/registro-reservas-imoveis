@@ -177,6 +177,26 @@ app.post("/reservas", async (req, res) => {
   }
 });
 
+app.put("/reservas/:id", async (req, res) => {
+  const { checkin, checkout } = req.body;
+  try {
+    const [reserva] = await pool.query("SELECT * FROM reservas WHERE id=?", [req.params.id]);
+    if (reserva.length === 0) return res.status(404).json({ erro: "Reserva não encontrada" });
+
+    const [imovel] = await pool.query("SELECT preco FROM imoveis WHERE id=?", [reserva[0].imovel_id]);
+    const dias = Math.ceil((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24));
+    const valor_total = imovel[0].preco * dias;
+
+    await pool.query(
+      "UPDATE reservas SET checkin=?, checkout=?, valor_total=? WHERE id=?",
+      [checkin, checkout, valor_total, req.params.id]
+    );
+    res.json({ mensagem: "Reserva atualizada!", valor_total });
+  } catch (err) {
+    res.status(400).json({ erro: "Erro ao atualizar reserva" });
+  }
+});
+
 app.delete("/reservas/:id", async (req, res) => {
   try {
     await pool.query("DELETE FROM reservas WHERE id=?", [req.params.id]);

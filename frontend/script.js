@@ -73,7 +73,6 @@ if (cadastroForm) {
 }
 
 
-
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
@@ -277,7 +276,7 @@ async function carregarReservas() {
   const res = await fetch(API + "/reservas/" + usuario.id);
   const reservas = await res.json();
   if (reservas.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='6'>Nenhuma reserva encontrada.</td></tr>";
+    tbody.innerHTML = "<tr><td colspan='7'>Nenhuma reserva encontrada.</td></tr>";
     return;
   }
   tbody.innerHTML = reservas.map(r => `
@@ -288,9 +287,50 @@ async function carregarReservas() {
       <td>${r.checkin}</td>
       <td>${r.checkout}</td>
       <td>R$ ${parseFloat(r.valor_total).toFixed(2)}</td>
-      <td><button class="btn-delete" onclick="cancelarReserva(${r.id})">Cancelar</button></td>
+      <td>
+        <button class="btn-edit" onclick="editarReserva(${r.id})">Editar</button>
+        <button class="btn-delete" onclick="cancelarReserva(${r.id})">Cancelar</button>
+      </td>
     </tr>
   `).join("");
+}
+
+async function editarReserva(id) {
+  const checkinInput = prompt("Nova data de check-in (DD-MM-AAAA):");
+  const checkoutInput = prompt("Nova data de check-out (DD-MM-AAAA):");
+  if (!checkinInput || !checkoutInput) return;
+
+  const regexData = /^\d{2}-\d{2}-\d{4}$/;
+  if (!regexData.test(checkinInput) || !regexData.test(checkoutInput)) {
+    alert("Formato de data inválido! Use DD-MM-AAAA");
+    return;
+  }
+
+  function converterData(data) {
+    const [dia, mes, ano] = data.split("-");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  const checkin = converterData(checkinInput);
+  const checkout = converterData(checkoutInput);
+
+  if (new Date(checkin) >= new Date(checkout)) {
+    alert("A data de check-out deve ser após o check-in!");
+    return;
+  }
+
+  const res = await fetch(API + "/reservas/" + id, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ checkin, checkout })
+  });
+  const data = await res.json();
+  if (data.mensagem) {
+    alert(`Reserva atualizada! Novo total: R$ ${parseFloat(data.valor_total).toFixed(2)}`);
+    carregarReservas();
+  } else {
+    alert(data.erro);
+  }
 }
 
 async function cancelarReserva(id) {
