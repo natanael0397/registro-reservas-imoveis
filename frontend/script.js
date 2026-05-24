@@ -155,6 +155,11 @@ async function carregarUsuarios() {
 }
 
 async function excluirUsuario(id) {
+  const usuarioLogado = getUsuario();
+  if (usuarioLogado && usuarioLogado.id === id) {
+    alert("Você não pode excluir sua própria conta!");
+    return;
+  }
   if (!confirm("Deseja excluir este usuário?")) return;
   await fetch(API + "/usuarios/" + id, { method: "DELETE" });
   carregarUsuarios();
