@@ -171,21 +171,28 @@ document.addEventListener("DOMContentLoaded", carregarImoveis);
 async function carregarUsuarios() {
   const tbody = document.getElementById("usuarios-tbody");
   if (!tbody) return;
+  const usuarioLogado = getUsuario();
   const res = await fetch(API + "/usuarios");
   const usuarios = await res.json();
-  tbody.innerHTML = usuarios.map(u => `
-    <tr>
-      <td><input type="checkbox" value="${u.id}"></td>
-      <td>${u.id}</td>
-      <td>${u.nome}</td>
-      <td>${u.email}</td>
-      <td>${u.tipo_usuario === 'proprietario' ? 'Proprietário' : 'Cliente'}</td>
-      <td>
-        <button class="btn-edit" onclick="editarUsuario(${u.id}, '${u.nome}', '${u.email}')">Editar</button>
-        <button class="btn-delete" onclick="excluirUsuario(${u.id})">Excluir</button>
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = usuarios.map(u => {
+    const ehProprioUsuario = usuarioLogado && usuarioLogado.id === u.id;
+    return `
+      <tr>
+        <td><input type="checkbox" value="${u.id}"></td>
+        <td>${u.id}</td>
+        <td>${u.nome}</td>
+        <td>${u.email}</td>
+        <td>${u.tipo_usuario === 'proprietario' ? 'Proprietário' : 'Cliente'}</td>
+        <td>
+          ${ehProprioUsuario
+            ? `<button class="btn-edit" onclick="editarUsuario(${u.id}, '${u.nome}', '${u.email}')">Editar</button>
+               <button class="btn-delete" onclick="excluirUsuario(${u.id})">Excluir</button>`
+            : `<span style="color:#94a3b8; font-size:0.85rem;">sem permissão</span>`
+          }
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 async function excluirUsuario(id) {
