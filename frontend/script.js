@@ -129,9 +129,30 @@ async function reservar(imovel_id) {
     window.location.href = "login.html";
     return;
   }
-  const checkin = prompt("Data de check-in (AAAA-MM-DD):");
-  const checkout = prompt("Data de check-out (AAAA-MM-DD):");
-  if (!checkin || !checkout) return;
+
+  const checkinInput = prompt("Data de check-in (DD-MM-AAAA):");
+  const checkoutInput = prompt("Data de check-out (DD-MM-AAAA):");
+  if (!checkinInput || !checkoutInput) return;
+
+  const regexData = /^\d{2}-\d{2}-\d{4}$/;
+  if (!regexData.test(checkinInput) || !regexData.test(checkoutInput)) {
+    alert("Formato de data inválido! Use DD-MM-AAAA");
+    return;
+  }
+
+  function converterData(data) {
+    const [dia, mes, ano] = data.split("-");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  const checkin = converterData(checkinInput);
+  const checkout = converterData(checkoutInput);
+
+  if (new Date(checkin) >= new Date(checkout)) {
+    alert("A data de check-out deve ser após o check-in!");
+    return;
+  }
+
   const res = await fetch(API + "/reservas", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
