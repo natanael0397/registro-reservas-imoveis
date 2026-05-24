@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Usuários - ReservaHub</title>
+    <title>Imóveis - ReservaHub</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,25 +25,22 @@
 
 <main class="container">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 class="section-title" style="margin:0">Usuários - Listar</h3>
-        <div style="display:flex; gap:10px;">
-            <a href="cadastro.html" class="btn-search">Incluir</a>
-            <button class="btn-search" onclick="imprimirTabela()">Imprimir</button>
-        </div>
+        <h3 class="section-title" style="margin:0">Imóveis - Listar</h3>
+        <a href="anunciar.html" class="btn-search">Incluir</a>
     </div>
 
     <table class="tabela">
         <thead>
             <tr>
-                <th></th>
                 <th>ID</th>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Perfil</th>
+                <th>Título</th>
+                <th>Localização</th>
+                <th>Tipo</th>
+                <th>Preço/Noite</th>
                 <th>Ações</th>
             </tr>
         </thead>
-        <tbody id="usuarios-tbody">
+        <tbody id="imoveis-tbody">
             <tr><td colspan="6">Carregando...</td></tr>
         </tbody>
     </table>

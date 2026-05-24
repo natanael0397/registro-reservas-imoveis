@@ -339,4 +339,56 @@ async function cancelarReserva(id) {
   carregarReservas();
 }
 
-document.addEventListener("DOMContentLoaded", carregarReservas);
+
+async function carregarImoveisTabela() {
+  const tbody = document.getElementById("imoveis-tbody");
+  if (!tbody) return;
+  const res = await fetch(API + "/imoveis");
+  const imoveis = await res.json();
+  if (imoveis.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='6'>Nenhum imóvel cadastrado.</td></tr>";
+    return;
+  }
+  tbody.innerHTML = imoveis.map(i => `
+    <tr>
+      <td>${i.id}</td>
+      <td>${i.titulo}</td>
+      <td>${i.localizacao}</td>
+      <td>${i.tipo === 'corp' ? 'Corporativo' : 'Residencial'}</td>
+      <td>R$ ${parseFloat(i.preco).toFixed(2)}</td>
+      <td>
+        <button class="btn-edit" onclick="editarImovel(${i.id}, '${i.titulo}', '${i.localizacao}', ${i.preco}, '${i.tipo}', '${i.foto_url}')">Editar</button>
+        <button class="btn-delete" onclick="excluirImovel(${i.id})">Excluir</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function excluirImovel(id) {
+  if (!confirm("Deseja excluir este imóvel?")) return;
+  await fetch(API + "/imoveis/" + id, { method: "DELETE" });
+  carregarImoveisTabela();
+}
+
+async function editarImovel(id, titulo, localizacao, preco, tipo, foto_url) {
+  const novoTitulo = prompt("Título:", titulo);
+  const novaLocalizacao = prompt("Localização:", localizacao);
+  const novoPreco = prompt("Preço por noite:", preco);
+  const novaFoto = prompt("URL da foto:", foto_url);
+  if (!novoTitulo || !novaLocalizacao || !novoPreco) return;
+
+  if (novoTitulo.length < 5) { alert("Título deve ter pelo menos 5 caracteres!"); return; }
+  if (/^\d+$/.test(novoTitulo)) { alert("Título não pode ser apenas números!"); return; }
+  if (novaLocalizacao.length < 5) { alert("Localização deve ter pelo menos 5 caracteres!"); return; }
+  if (!novaFoto || !novaFoto.startsWith("http")) { alert("URL da foto inválida!"); return; }
+
+  await fetch(API + "/imoveis/" + id, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ titulo: novoTitulo, localizacao: novaLocalizacao, preco: novoPreco, tipo, foto_url: novaFoto })
+  });
+  alert("Imóvel atualizado!");
+  carregarImoveisTabela();
+}
+
+document.addEventListener("DOMContentLoaded", carregarImoveisTabela);
