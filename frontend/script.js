@@ -98,13 +98,21 @@ if (loginForm) {
 }
 
 
+let todosImoveis = [];
+
 async function carregarImoveis() {
   const grid = document.getElementById("imoveis-grid");
   if (!grid) return;
   const res = await fetch(API + "/imoveis");
-  const imoveis = await res.json();
+  todosImoveis = await res.json();
+  renderizarImoveis(todosImoveis);
+}
+
+function renderizarImoveis(imoveis) {
+  const grid = document.getElementById("imoveis-grid");
+  if (!grid) return;
   if (imoveis.length === 0) {
-    grid.innerHTML = "<p style='color:#64748b'>Nenhum imóvel cadastrado ainda.</p>";
+    grid.innerHTML = "<p style='color:#64748b'>Nenhum imóvel encontrado.</p>";
     return;
   }
   grid.innerHTML = imoveis.map(i => `
@@ -120,6 +128,26 @@ async function carregarImoveis() {
     </article>
   `).join("");
 }
+
+function buscarImoveis() {
+  const filtroLocal = document.getElementById("filtroLocal");
+  const filtroTipo = document.getElementById("filtroTipo");
+  if (!filtroLocal || !filtroTipo) return;
+
+  const local = filtroLocal.value.trim().toLowerCase();
+  const tipo = filtroTipo.value;
+
+  const filtrados = todosImoveis.filter(i => {
+    const matchLocal = local === "" || i.localizacao.toLowerCase().includes(local);
+    const matchTipo = tipo === "" || i.tipo === tipo;
+    return matchLocal && matchTipo;
+  });
+
+  renderizarImoveis(filtrados);
+}
+
+document.addEventListener("DOMContentLoaded", carregarImoveis);
+
 
 async function reservar(imovel_id) {
   const usuario = getUsuario();
@@ -160,12 +188,11 @@ async function reservar(imovel_id) {
   const data = await res.json();
   if (data.mensagem) {
     alert(`Reserva realizada! Total: R$ ${parseFloat(data.valor_total).toFixed(2)}`);
+    window.location.href = "reservas.html";
   } else {
     alert(data.erro);
   }
 }
-
-document.addEventListener("DOMContentLoaded", carregarImoveis);
 
 
 async function carregarUsuarios() {
@@ -211,11 +238,21 @@ async function editarUsuario(id, nome, email) {
   const novoEmail = prompt("Novo email:", email);
   const novaSenha = prompt("Nova senha (deixe em branco para não alterar):");
   if (!novoNome || !novoEmail) return;
+
   await fetch(API + "/usuarios/" + id, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nome: novoNome, email: novoEmail, senha: novaSenha })
   });
+
+  const usuarioLogado = getUsuario();
+  if (usuarioLogado && usuarioLogado.id === id) {
+    usuarioLogado.nome = novoNome;
+    usuarioLogado.email = novoEmail;
+    salvarUsuario(usuarioLogado);
+    atualizarNavbar();
+  }
+
   alert("Usuário atualizado!");
   carregarUsuarios();
 }
@@ -280,26 +317,30 @@ async function carregarReservas() {
     window.location.href = "login.html";
     return;
   }
-  const res = await fetch(API + "/reservas/" + usuario.id);
-  const reservas = await res.json();
-  if (reservas.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='7'>Nenhuma reserva encontrada.</td></tr>";
-    return;
+  try {
+    const res = await fetch(API + "/reservas/" + usuario.id);
+    const reservas = await res.json();
+    if (reservas.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='7'>Nenhuma reserva encontrada.</td></tr>";
+      return;
+    }
+    tbody.innerHTML = reservas.map(r => `
+      <tr>
+        <td>${r.id}</td>
+        <td>${r.titulo}</td>
+        <td>${r.localizacao}</td>
+        <td>${r.checkin}</td>
+        <td>${r.checkout}</td>
+        <td>R$ ${parseFloat(r.valor_total).toFixed(2)}</td>
+        <td>
+          <button class="btn-edit" onclick="editarReserva(${r.id})">Editar</button>
+          <button class="btn-delete" onclick="cancelarReserva(${r.id})">Cancelar</button>
+        </td>
+      </tr>
+    `).join("");
+  } catch (err) {
+    tbody.innerHTML = "<tr><td colspan='7'>Erro ao carregar reservas.</td></tr>";
   }
-  tbody.innerHTML = reservas.map(r => `
-    <tr>
-      <td>${r.id}</td>
-      <td>${r.titulo}</td>
-      <td>${r.localizacao}</td>
-      <td>${r.checkin}</td>
-      <td>${r.checkout}</td>
-      <td>R$ ${parseFloat(r.valor_total).toFixed(2)}</td>
-      <td>
-        <button class="btn-edit" onclick="editarReserva(${r.id})">Editar</button>
-        <button class="btn-delete" onclick="cancelarReserva(${r.id})">Cancelar</button>
-      </td>
-    </tr>
-  `).join("");
 }
 
 async function editarReserva(id) {
@@ -346,29 +387,38 @@ async function cancelarReserva(id) {
   carregarReservas();
 }
 
+document.addEventListener("DOMContentLoaded", carregarReservas);
+
 
 async function carregarImoveisTabela() {
   const tbody = document.getElementById("imoveis-tbody");
   if (!tbody) return;
+  const usuarioLogado = getUsuario();
   const res = await fetch(API + "/imoveis");
   const imoveis = await res.json();
   if (imoveis.length === 0) {
     tbody.innerHTML = "<tr><td colspan='6'>Nenhum imóvel cadastrado.</td></tr>";
     return;
   }
-  tbody.innerHTML = imoveis.map(i => `
-    <tr>
-      <td>${i.id}</td>
-      <td>${i.titulo}</td>
-      <td>${i.localizacao}</td>
-      <td>${i.tipo === 'corp' ? 'Corporativo' : 'Residencial'}</td>
-      <td>R$ ${parseFloat(i.preco).toFixed(2)}</td>
-      <td>
-        <button class="btn-edit" onclick="editarImovel(${i.id}, '${i.titulo}', '${i.localizacao}', ${i.preco}, '${i.tipo}', '${i.foto_url}')">Editar</button>
-        <button class="btn-delete" onclick="excluirImovel(${i.id})">Excluir</button>
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = imoveis.map(i => {
+    const ehDono = usuarioLogado && usuarioLogado.id === i.proprietario_id;
+    return `
+      <tr>
+        <td>${i.id}</td>
+        <td>${i.titulo}</td>
+        <td>${i.localizacao}</td>
+        <td>${i.tipo === 'corp' ? 'Corporativo' : 'Residencial'}</td>
+        <td>R$ ${parseFloat(i.preco).toFixed(2)}</td>
+        <td>
+          ${ehDono
+            ? `<button class="btn-edit" onclick="editarImovel(${i.id}, '${i.titulo}', '${i.localizacao}', ${i.preco}, '${i.tipo}', '${i.foto_url}')">Editar</button>
+               <button class="btn-delete" onclick="excluirImovel(${i.id})">Excluir</button>`
+            : `<span style="color:#94a3b8; font-size:0.85rem;">sem permissão</span>`
+          }
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 async function excluirImovel(id) {
