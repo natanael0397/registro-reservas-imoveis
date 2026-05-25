@@ -329,8 +329,8 @@ async function carregarReservas() {
         <td>${r.id}</td>
         <td>${r.titulo}</td>
         <td>${r.localizacao}</td>
-        <td>${r.checkin}</td>
-        <td>${r.checkout}</td>
+        <td>${r.checkin.split('T')[0].split('-').reverse().join('-')}</td>
+        <td>${r.checkout.split('T')[0].split('-').reverse().join('-')}</td>
         <td>R$ ${parseFloat(r.valor_total).toFixed(2)}</td>
         <td>
           <button class="btn-edit" onclick="editarReserva(${r.id})">Editar</button>
